@@ -34,10 +34,20 @@ app.post('/doLogin',(req,res)=>{
     }
     if(indexToFind != -1){
         req.session.user = userJson[indexToFind].name;
-        req.session.role = userJson[indexToFind].password;
+        req.session.role = userJson[indexToFind].role;
         res.render('index',{user:userJson[indexToFind]})
     }else{
         res.end('Login failed!')
+    }
+})
+app.get('/adminPage',(req,res)=>{
+    //get user role
+    let name = req.session.name;
+    let role = req.session.role;
+    if(role == "admin"){
+        res.end("Hello Admin!")
+    }else{
+        res.end("Only Amin can access this page!")
     }
 })
 var fileName = 'user.txt';

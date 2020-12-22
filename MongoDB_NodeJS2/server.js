@@ -14,6 +14,19 @@ app.get('/', async (req,res)=>{
     let results = await dbo.collection("products").find({}).toArray();
     res.render('index',{model:results})
 })
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.get('/search',(req,res)=>{
+    res.render('search')
+})
+app.post('/doSearch',async (req,res)=>{
+    let nameSearch = req.body.txtSearch;
+    let client= await MongoClient.connect(url);
+    let dbo = client.db("ProductDB2");
+    let results = await dbo.collection("products").find({productName:nameSearch}).toArray();
+    res.render('index',{model:results})
+})
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT)

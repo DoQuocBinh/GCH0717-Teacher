@@ -27,7 +27,8 @@ app.post('/doSearch',async (req,res)=>{
     let nameSearch = req.body.txtSearch;
     let client= await MongoClient.connect(url);
     let dbo = client.db("ProductDB2");
-    let results = await dbo.collection("products").find({productName:nameSearch}).toArray();
+    let results = await dbo.collection("products").
+        find({productName: new RegExp(nameSearch,'i')}).toArray();
     res.render('index',{model:results})
 })
 
@@ -59,6 +60,20 @@ app.post('/doInsert',async (req,res)=>{
         res.redirect('/')
     }
     
+})
+
+app.get('/delete', async (req,res)=>{
+    //id: string from URL
+    let id = req.query.id;
+    //convert id from URL to MongoDB' id
+    let ObjectID = require('mongodb').ObjectID(id);
+    //the conditon to delete
+    let condition = {'_id': ObjectID}
+    let client= await MongoClient.connect(url);
+    let dbo = client.db("ProductDB2");
+    await dbo.collection("products").deleteOne(condition);
+    res.redirect('/');
+
 })
 
 const PORT = process.env.PORT || 3000;

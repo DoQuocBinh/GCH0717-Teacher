@@ -76,6 +76,36 @@ app.get('/delete', async (req,res)=>{
 
 })
 
+app.get('/edit',async (req,res)=>{
+    //id: string from URL
+    let id = req.query.id;
+    //convert id from URL to MongoDB' id
+    let ObjectID = require('mongodb').ObjectID(id);
+    //the conditon to delete
+    let condition = {'_id': ObjectID}
+    //get the product by id
+    let client= await MongoClient.connect(url);
+    let dbo = client.db("ProductDB2");
+    let prod = await dbo.collection("products").findOne(condition);
+    res.render('edit',{model:prod})
+})
+
+app.post('/doEdit',async (req,res)=>{
+    let nameInput = req.body.txtName;
+    let colorInput = req.body.txtColor;
+    let priceInput = req.body.txtPrice;
+    let id = req.body.id;
+    
+    let newValues ={$set : {productName: nameInput,price:priceInput,color:colorInput}};
+    var ObjectID = require('mongodb').ObjectID;
+    let condition = {"_id" : ObjectID(id)};
+    
+    let client= await MongoClient.connect(url);
+    let dbo = client.db("ProductDB2");
+    await dbo.collection("products").updateOne(condition,newValues);
+    res.redirect('/');
+})
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT)
 console.log('Server is running')

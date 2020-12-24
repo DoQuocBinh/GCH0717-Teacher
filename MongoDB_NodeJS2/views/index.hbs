@@ -7,11 +7,32 @@
 </head>
 <body>
     <h1>Hello world</h1>
-    <ul>
-        {{# each model}}
-         <li>{{_id}}- {{productName}}- {{color}}</li>
+    <table width='40%'>
+        <tr>
+            <td>Name</td>
+            <td>Color</td>
+            <td>Price</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+        {{#each model}}
+        <tr>            
+            <td>{{productName}}</td>
+            <td>{{color}}</td>
+            <td>{{price}}</td>
+            <td>
+                <a href="/edit?id={{_id}}">Edit</a>
+            </td>
+            <td><a href="/delete?id={{_id}}" 
+                onclick="return confirmDelete('{{productName}}')">Delete</a></td>
+        </tr>
         {{/each}}
-    </ul>
+    </table>
     {{> footer}}
+    <script>    
+        function confirmDelete(name){
+            return confirm('Are your sure????' + name);
+        }
+    </script>
 </body>
 </html>
